@@ -1,0 +1,27 @@
+[0.012s] Invoking command in '/workspace/Rover/build/PhotometricDatasetCalibration': /usr/bin/cmake /workspace/Rover/VSLAM/VSLAM-LAB/Datasets/extra-files -DCMAKE_INSTALL_PREFIX=/workspace/Rover/install/PhotometricDatasetCalibration
+[0.022s] [0mBuild type: Release[0m
+[0.030s] [31mCMake Error at /usr/lib/x86_64-linux-gnu/cmake/libzip/libzip-targets.cmake:93 (message):
+[0.030s]   The imported target "libzip::zipcmp" references the file
+[0.030s] 
+[0.030s]      "/usr/bin/zipcmp"
+[0.030s] 
+[0.030s]   but this file does not exist.  Possible reasons include:
+[0.030s] 
+[0.030s]   * The file was deleted, renamed, or moved to another location.
+[0.030s] 
+[0.030s]   * An install or uninstall procedure did not complete successfully.
+[0.030s] 
+[0.031s]   * The installation package was faulty and contained
+[0.031s] 
+[0.031s]      "/usr/lib/x86_64-linux-gnu/cmake/libzip/libzip-targets.cmake"
+[0.031s] 
+[0.031s]   but not all the files it references.
+[0.031s] 
+[0.031s] Call Stack (most recent call first):
+[0.031s]   /usr/lib/x86_64-linux-gnu/cmake/libzip/libzip-config.cmake:42 (include)
+[0.031s]   CMakeLists.txt:16 (find_package)
+[0.031s] 
+[0.031s] [0m
+[0.031s] -- Configuring incomplete, errors occurred!
+[0.031s] See also "/workspace/Rover/build/PhotometricDatasetCalibration/CMakeFiles/CMakeOutput.log".
+[0.032s] Invoked command in '/workspace/Rover/build/PhotometricDatasetCalibration' returned '1': /usr/bin/cmake /workspace/Rover/VSLAM/VSLAM-LAB/Datasets/extra-files -DCMAKE_INSTALL_PREFIX=/workspace/Rover/install/PhotometricDatasetCalibration

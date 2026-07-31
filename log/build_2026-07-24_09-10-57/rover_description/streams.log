@@ -1,0 +1,24 @@
+[0.010s] Invoking command in '/workspace/Rover/build/rover_description': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /workspace/Rover/build/rover_description -- -j12 -l12
+[0.047s] -- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.164s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[0.187s] [31mCMake Error at CMakeLists.txt:10 (find_package):
+[0.187s]   By not providing "Findros_gz_sim.cmake" in CMAKE_MODULE_PATH this project
+[0.187s]   has asked CMake to find a package configuration file provided by
+[0.187s]   "ros_gz_sim", but CMake did not find one.
+[0.187s] 
+[0.187s]   Could not find a package configuration file provided by "ros_gz_sim" with
+[0.187s]   any of the following names:
+[0.187s] 
+[0.188s]     ros_gz_simConfig.cmake
+[0.188s]     ros_gz_sim-config.cmake
+[0.188s] 
+[0.188s]   Add the installation prefix of "ros_gz_sim" to CMAKE_PREFIX_PATH or set
+[0.188s]   "ros_gz_sim_DIR" to a directory containing one of the above files.  If
+[0.188s]   "ros_gz_sim" provides a separate development package or SDK, be sure it has
+[0.188s]   been installed.
+[0.188s] 
+[0.188s] [0m
+[0.188s] -- Configuring incomplete, errors occurred!
+[0.189s] See also "/workspace/Rover/build/rover_description/CMakeFiles/CMakeOutput.log".
+[0.190s] gmake: *** [Makefile:226: cmake_check_build_system] Error 1
+[0.192s] Invoked command in '/workspace/Rover/build/rover_description' returned '2': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /workspace/Rover/build/rover_description -- -j12 -l12
