@@ -63,7 +63,7 @@ CMAKE_BINARY_DIR = /workspace/Rover/build/rover_description
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all:
+all: CMakeFiles/voxel_downsampler.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -73,6 +73,7 @@ preinstall:
 # The main recursive "clean" target.
 clean: CMakeFiles/uninstall.dir/clean
 clean: CMakeFiles/rover_description_uninstall.dir/clean
+clean: CMakeFiles/voxel_downsampler.dir/clean
 .PHONY : clean
 
 #=============================================================================
@@ -126,6 +127,32 @@ rover_description_uninstall: CMakeFiles/rover_description_uninstall.dir/rule
 CMakeFiles/rover_description_uninstall.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/rover_description_uninstall.dir/build.make CMakeFiles/rover_description_uninstall.dir/clean
 .PHONY : CMakeFiles/rover_description_uninstall.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/voxel_downsampler.dir
+
+# All Build rule for target.
+CMakeFiles/voxel_downsampler.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/voxel_downsampler.dir/build.make CMakeFiles/voxel_downsampler.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/voxel_downsampler.dir/build.make CMakeFiles/voxel_downsampler.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/workspace/Rover/build/rover_description/CMakeFiles --progress-num=1,2 "Built target voxel_downsampler"
+.PHONY : CMakeFiles/voxel_downsampler.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/voxel_downsampler.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /workspace/Rover/build/rover_description/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/voxel_downsampler.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /workspace/Rover/build/rover_description/CMakeFiles 0
+.PHONY : CMakeFiles/voxel_downsampler.dir/rule
+
+# Convenience name for target.
+voxel_downsampler: CMakeFiles/voxel_downsampler.dir/rule
+.PHONY : voxel_downsampler
+
+# clean rule for target.
+CMakeFiles/voxel_downsampler.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/voxel_downsampler.dir/build.make CMakeFiles/voxel_downsampler.dir/clean
+.PHONY : CMakeFiles/voxel_downsampler.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

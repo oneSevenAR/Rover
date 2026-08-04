@@ -142,8 +142,8 @@
   <joint name="camera_joint" type="fixed">
     <parent link="chassis"/>
     <child link="camera_link"/>
-    <!-- Lifted slightly to match the new chassis height -->
-    <origin xyz="0.2 0 0.20" rpy="0 0 0"/>
+    <!-- The middle value (pitch) ensures the camera always sees the ground -->
+    <origin xyz="0.2 0 0.1" rpy="0 0.35 0"/> 
   </joint>
 
   <link name="camera_link">
@@ -168,7 +168,7 @@
   <!-- Left Camera Sensor -->
   <gazebo reference="camera_link">
     <sensor type="camera" name="left_camera">
-      <update_rate>30.0</update_rate>
+      <update_rate>10.0</update_rate>
       <topic>/stereo/left/image_raw</topic>
       <gz_frame_id>left_camera_optical_frame</gz_frame_id>
       <camera name="left">
@@ -189,7 +189,7 @@
   <!-- Right Camera Sensor -->
   <gazebo reference="camera_link">
     <sensor type="camera" name="right_camera">
-      <update_rate>2.0</update_rate>
+      <update_rate>10.0</update_rate>
       <topic>/stereo/right/image_raw</topic>
       <pose>0 -0.1 0 0 0 0</pose>
       <gz_frame_id>left_camera_optical_frame</gz_frame_id>

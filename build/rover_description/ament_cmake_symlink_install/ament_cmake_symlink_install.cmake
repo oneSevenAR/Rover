@@ -315,14 +315,14 @@ message(STATUS "Execute custom install script")
 
 # begin of custom install code
 
-# install(DIRECTORY "urdf" "launch" "DESTINATION" "share/rover_description")
-ament_cmake_symlink_install_directory("/workspace/Rover/src/rover_description" DIRECTORY "urdf" "launch" "DESTINATION" "share/rover_description")
-
 # install(PROGRAMS "scripts/camera_info_fixer.py" "DESTINATION" "lib/rover_description")
 ament_cmake_symlink_install_programs("/workspace/Rover/src/rover_description" PROGRAMS "scripts/camera_info_fixer.py" "DESTINATION" "lib/rover_description")
 
-# install(DIRECTORY "launch" "urdf" "rviz" "config" "DESTINATION" "share/rover_description/")
-ament_cmake_symlink_install_directory("/workspace/Rover/src/rover_description" DIRECTORY "launch" "urdf" "rviz" "config" "DESTINATION" "share/rover_description/")
+# install("TARGETS" "voxel_downsampler" "DESTINATION" "lib/rover_description")
+include("/workspace/Rover/build/rover_description/ament_cmake_symlink_install_targets_0_${CMAKE_INSTALL_CONFIG_NAME}.cmake")
+
+# install(DIRECTORY "launch" "urdf" "rviz" "config" "DESTINATION" "share/rover_description")
+ament_cmake_symlink_install_directory("/workspace/Rover/src/rover_description" DIRECTORY "launch" "urdf" "rviz" "config" "DESTINATION" "share/rover_description")
 
 # install(FILES "/workspace/Rover/build/rover_description/ament_cmake_index/share/ament_index/resource_index/package_run_dependencies/rover_description" "DESTINATION" "share/ament_index/resource_index/package_run_dependencies")
 ament_cmake_symlink_install_files("/workspace/Rover/src/rover_description" FILES "/workspace/Rover/build/rover_description/ament_cmake_index/share/ament_index/resource_index/package_run_dependencies/rover_description" "DESTINATION" "share/ament_index/resource_index/package_run_dependencies")

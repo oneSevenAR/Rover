@@ -117,8 +117,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 1.6264926195144653
-        Min Value: -0.056009963154792786
+        Max Value: 0.02129741758108139
+        Min Value: -1.8196728229522705
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -213,7 +213,7 @@ Visualization Manager:
           Scale: 1
           Value: true
         Value: true
-      Enabled: true
+      Enabled: false
       Keep: 1000
       Name: Odometry
       Position Tolerance: 0.10000000149011612
@@ -234,7 +234,7 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /odom
-      Value: true
+      Value: false
     - Class: rviz_default_plugins/Camera
       Enabled: true
       Far Plane Distance: 100
@@ -263,7 +263,7 @@ Visualization Manager:
       Buffer Length: 1
       Class: rviz_default_plugins/Path
       Color: 252; 255; 73
-      Enabled: false
+      Enabled: true
       Head Diameter: 0.30000001192092896
       Head Length: 0.20000000298023224
       Length: 0.30000001192092896
@@ -286,7 +286,7 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /mapPath
-      Value: false
+      Value: true
     - Alpha: 0.699999988079071
       Class: rviz_default_plugins/Map
       Color Scheme: map
@@ -382,18 +382,18 @@ Visualization Manager:
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 1.4325019121170044
-        Y: -0.2201773226261139
-        Z: 0.3256581127643585
+        X: 1.4580215215682983
+        Y: -0.09559875726699829
+        Z: 0.2686319947242737
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.4153992831707001
+      Pitch: 1.1003986597061157
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 2.74044132232666
+      Yaw: 2.8504436016082764
     Saved:
       - Class: rviz_default_plugins/Orbit
         Distance: 3.000825881958008
