@@ -1,1 +1,86 @@
+# World files
 /landing_site.sdf
+
+# ROS / colcon outputs
+/build/
+/install/
+/log/
+**/build/
+**/install/
+**/log/
+/devel/
+*.bag
+
+# Native build artifacts
+/cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+Makefile
+Testing/
+
+*.o
+*.obj
+*.a
+*.so
+*.dylib
+*.dll
+*.lib
+*.exe
+*.out
+compile_commands.json
+
+# Dependency directories
+/node_modules/
+/vendor/
+
+/venv/
+/env/
+/.venv/
+venv/
+env/
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+coverage/
+
+# Environment files
+.env
+.env.*
+
+# IDE and editor files
+.vscode/
+.idea/
+.clangd
+.project
+.classpath
+*.sublime-workspace
+*.swp
+*.swo
+*.user
+*.userprefs
+*~
+
+# Logs and temporary files
+*.log
+/logs/
+*.tmp
+*.bak
+*.cache
+.cache/
+
+# OS files
+.DS_Store
+Thumbs.db
+.directory

@@ -495,3 +495,99 @@ int main(void)
   return 0;
 }
 
+Determining if the function XOpenDisplay exists in the /usr/lib/x86_64-linux-gnu/libX11.so;/usr/lib/x86_64-linux-gnu/libXext.so passed with the following output:
+Change Dir: /workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_6ab10/fast && gmake[1]: Entering directory '/workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp'
+/usr/bin/gmake  -f CMakeFiles/cmTC_6ab10.dir/build.make CMakeFiles/cmTC_6ab10.dir/build
+gmake[2]: Entering directory '/workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_6ab10.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=XOpenDisplay -o CMakeFiles/cmTC_6ab10.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+Linking C executable cmTC_6ab10
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6ab10.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=XOpenDisplay CMakeFiles/cmTC_6ab10.dir/CheckFunctionExists.c.o -o cmTC_6ab10  /usr/lib/x86_64-linux-gnu/libX11.so /usr/lib/x86_64-linux-gnu/libXext.so 
+gmake[2]: Leaving directory '/workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp'
+gmake[1]: Leaving directory '/workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function gethostbyname exists passed with the following output:
+Change Dir: /workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_07a7d/fast && gmake[1]: Entering directory '/workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp'
+/usr/bin/gmake  -f CMakeFiles/cmTC_07a7d.dir/build.make CMakeFiles/cmTC_07a7d.dir/build
+gmake[2]: Entering directory '/workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_07a7d.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=gethostbyname -o CMakeFiles/cmTC_07a7d.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+Linking C executable cmTC_07a7d
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_07a7d.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=gethostbyname CMakeFiles/cmTC_07a7d.dir/CheckFunctionExists.c.o -o cmTC_07a7d 
+gmake[2]: Leaving directory '/workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp'
+gmake[1]: Leaving directory '/workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function connect exists passed with the following output:
+Change Dir: /workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_7f808/fast && gmake[1]: Entering directory '/workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp'
+/usr/bin/gmake  -f CMakeFiles/cmTC_7f808.dir/build.make CMakeFiles/cmTC_7f808.dir/build
+gmake[2]: Entering directory '/workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_7f808.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=connect -o CMakeFiles/cmTC_7f808.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+Linking C executable cmTC_7f808
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7f808.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=connect CMakeFiles/cmTC_7f808.dir/CheckFunctionExists.c.o -o cmTC_7f808 
+gmake[2]: Leaving directory '/workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp'
+gmake[1]: Leaving directory '/workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function remove exists passed with the following output:
+Change Dir: /workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_691d7/fast && gmake[1]: Entering directory '/workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp'
+/usr/bin/gmake  -f CMakeFiles/cmTC_691d7.dir/build.make CMakeFiles/cmTC_691d7.dir/build
+gmake[2]: Entering directory '/workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_691d7.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=remove -o CMakeFiles/cmTC_691d7.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+Linking C executable cmTC_691d7
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_691d7.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=remove CMakeFiles/cmTC_691d7.dir/CheckFunctionExists.c.o -o cmTC_691d7 
+gmake[2]: Leaving directory '/workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp'
+gmake[1]: Leaving directory '/workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function shmat exists passed with the following output:
+Change Dir: /workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_eb39b/fast && gmake[1]: Entering directory '/workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp'
+/usr/bin/gmake  -f CMakeFiles/cmTC_eb39b.dir/build.make CMakeFiles/cmTC_eb39b.dir/build
+gmake[2]: Entering directory '/workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_eb39b.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=shmat -o CMakeFiles/cmTC_eb39b.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+Linking C executable cmTC_eb39b
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_eb39b.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=shmat CMakeFiles/cmTC_eb39b.dir/CheckFunctionExists.c.o -o cmTC_eb39b 
+gmake[2]: Leaving directory '/workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp'
+gmake[1]: Leaving directory '/workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function IceConnectionNumber exists in the ICE passed with the following output:
+Change Dir: /workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_8b014/fast && gmake[1]: Entering directory '/workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp'
+/usr/bin/gmake  -f CMakeFiles/cmTC_8b014.dir/build.make CMakeFiles/cmTC_8b014.dir/build
+gmake[2]: Entering directory '/workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_8b014.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=IceConnectionNumber -o CMakeFiles/cmTC_8b014.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+Linking C executable cmTC_8b014
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8b014.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=IceConnectionNumber CMakeFiles/cmTC_8b014.dir/CheckFunctionExists.c.o -o cmTC_8b014  -lICE 
+gmake[2]: Leaving directory '/workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp'
+gmake[1]: Leaving directory '/workspace/Rover/build/rover_description/CMakeFiles/CMakeTmp'
+
+
+

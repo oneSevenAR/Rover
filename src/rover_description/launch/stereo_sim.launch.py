@@ -35,204 +35,61 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Force the absolute path so Gazebo doesn't lose the texture
+    # Force the absolute path so Gazebo doesn't lose the files
     workspace_dir = os.path.abspath(os.getcwd())
-    checker_texture = os.path.join(workspace_dir, "src", "checkerboard.png")
     
-    material_xml = f"""
-    <material>
-    <ambient>1 1 1 1</ambient>
-    <diffuse>1 1 1 1</diffuse>
-    <specular>0.2 0.2 0.2 1</specular>
-    <pbr>
-        <metal>
-        <albedo_map>{checker_texture}</albedo_map>
-        </metal>
-    </pbr>
-    </material>
-    """
-
-    red_box_xml = f"""<?xml version="1.0"?>
+    # Custom terrain absolute paths
+    # Define all three paths explicitly
+    terrain_visual_path = os.path.join(workspace_dir, "src", "rover_description", "rviz", "terrain_for_rover.obj")
+    terrain_collision_path = os.path.join(workspace_dir, "src", "rover_description", "rviz", "terrain_for_rover_triangles.stl")
+    terrain_texture_path = os.path.join(workspace_dir, "src", "rover_description", "rviz", "texture.jpg")
+    
+    terrain_xml = f"""<?xml version="1.0"?>
     <sdf version="1.8">
-    <model name="red_box">
+    <model name="custom_terrain">
         <static>true</static>
         <link name="link">
         <visual name="visual">
             <geometry>
-            <box>
-                <size>1 1 1</size>
-            </box>
+                <mesh><uri>file://{terrain_visual_path}</uri></mesh>
             </geometry>
-            {material_xml}
+            <!-- FORCE THE TEXTURE DIRECTLY IN THE SDF -->
+            <material>
+                <diffuse>1 1 1 1</diffuse>
+                <specular>0 0 0 1</specular>
+                <pbr>
+                    <metal>
+                        <albedo_map>file://{terrain_texture_path}</albedo_map>
+                    </metal>
+                </pbr>
+            </material>
         </visual>
         <collision name="collision">
             <geometry>
-            <box>
-                <size>1 1 1</size>
-            </box>
+                <mesh><uri>file://{terrain_collision_path}</uri></mesh>
             </geometry>
         </collision>
         </link>
     </model>
     </sdf>"""
 
-    blue_box_xml = f"""<?xml version="1.0"?>
-    <sdf version="1.8">
-    <model name="blue_box">
-        <static>true</static>
-        <link name="link">
-        <visual name="visual">
-            <geometry>
-            <box>
-                <size>1 2 1</size>
-            </box>
-            </geometry>
-            {material_xml}
-        </visual>
-        <collision name="collision">
-            <geometry>
-            <box>
-                <size>1 2 1</size>
-            </box>
-            </geometry>
-        </collision>
-        </link>
-    </model>
-    </sdf>"""
-
-    green_cylinder_xml = f"""<?xml version="1.0"?>
-    <sdf version="1.8">
-    <model name="green_cylinder">
-        <static>true</static>
-        <link name="link">
-        <visual name="visual">
-            <geometry>
-            <cylinder>
-                <radius>0.5</radius>
-                <length>1.0</length>
-            </cylinder>
-            </geometry>
-            {material_xml}
-        </visual>
-        <collision name="collision">
-            <geometry>
-            <cylinder>
-                <radius>0.5</radius>
-                <length>1.0</length>
-            </cylinder>
-            </geometry>
-        </collision>
-        </link>
-    </model>
-    </sdf>"""
-
-    yellow_sphere_xml = f"""<?xml version="1.0"?>
-    <sdf version="1.8">
-    <model name="yellow_sphere">
-        <static>true</static>
-        <link name="link">
-        <visual name="visual">
-            <geometry>
-            <sphere>
-                <radius>0.6</radius>
-            </sphere>
-            </geometry>
-            {material_xml}
-        </visual>
-        <collision name="collision">
-            <geometry>
-            <sphere>
-                <radius>0.6</radius>
-            </sphere>
-            </geometry>
-        </collision>
-        </link>
-    </model>
-    </sdf>"""
-
-    wall_box_xml = f"""<?xml version="1.0"?>
-    <sdf version="1.8">
-    <model name="wall_box">
-        <static>true</static>
-        <link name="link">
-        <visual name="visual">
-            <geometry>
-            <box>
-                <size>0.5 3 1</size>
-            </box>
-            </geometry>
-            {material_xml}
-        </visual>
-        <collision name="collision">
-            <geometry>
-            <box>
-                <size>0.5 3 1</size>
-            </box>
-            </geometry>
-        </collision>
-        </link>
-    </model>
-    </sdf>"""
-
-    # Spawn Checkered Cube
-    node_spawn_red_box = Node(
+    # 3. Spawn Custom Terrain
+    node_spawn_terrain = Node(
         package='ros_gz_sim',
         executable='create',
-        name='spawn_red_box',
+        name='spawn_terrain',
         arguments=[
-            '-string', red_box_xml,
-            '-name', 'red_box',
-            '-x', '2.0',
-            '-y', '1.0',
-            '-z', '0.5'
+            '-string', terrain_xml,
+            '-name', 'custom_terrain',
+            '-x', '0.0',
+            '-y', '0.0',
+            '-z', '0.0'
         ],
         output='screen'
     )
 
-    # Spawn Checkered Rectangular Box
-    node_spawn_blue_box = Node(
-        package='ros_gz_sim',
-        executable='create',
-        name='spawn_blue_box',
-        arguments=[
-            '-string', blue_box_xml,
-            '-name', 'blue_box',
-            '-x', '3.0',
-            '-y', '-1.5',
-            '-z', '0.5',
-            '-Y', '0.5'
-        ],
-        output='screen'
-    )
-
-    # Spawn Cylinder
-    node_spawn_cylinder = Node(
-        package='ros_gz_sim',
-        executable='create',
-        name='spawn_cylinder',
-        arguments=['-string', green_cylinder_xml, '-name', 'green_cylinder', '-x', '4.0', '-y', '1.5', '-z', '0.5'],
-        output='screen'
-    )
-
-    # Spawn Sphere
-    node_spawn_sphere = Node(
-        package='ros_gz_sim',
-        executable='create',
-        name='spawn_sphere',
-        arguments=['-string', yellow_sphere_xml, '-name', 'yellow_sphere', '-x', '5.0', '-y', '-1.0', '-z', '0.6'],
-        output='screen'
-    )
-
-    # Spawn Wall
-    node_spawn_wall = Node(
-        package='ros_gz_sim',
-        executable='create',
-        name='spawn_wall',
-        arguments=['-string', wall_box_xml, '-name', 'wall_box', '-x', '2.0', '-y', '-2.5', '-z', '0.5'],
-        output='screen'
-    )
-
-    # Spawn Camera Rig
+    # 4. Spawn Camera Rig (Rover)
+    # Z-height increased to 10.0 to ensure a safe drop onto the highest displaced terrain peaks
     node_spawn_entity = Node(
         package='ros_gz_sim',
         executable='create',
@@ -240,12 +97,12 @@ def generate_launch_description():
         arguments=[
             '-topic', '/robot_description',
             '-name', 'stereo_rig',
-            '-z', '0.5'
+            '-z', '7.0'
         ],
         output='screen'
     )
 
-    # 4. Master Unified Bridge (Clean and Stable)
+    # 5. Master Unified Bridge (Clean and Stable)
     node_bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
@@ -272,7 +129,7 @@ def generate_launch_description():
         output='screen'
     )
 
-    # 5. Camera Info Fixer
+    # 6. Camera Info Fixer
     node_camera_info_fixer = Node(
         package='rover_description',
         executable='camera_info_fixer.py',
@@ -280,7 +137,7 @@ def generate_launch_description():
         output='screen'
     )
 
-    # 6. Stereo Processing Container
+    # 7. Stereo Processing Container
     stereo_container = ComposableNodeContainer(
         name='stereo_container',
         namespace='stereo',
@@ -317,7 +174,6 @@ def generate_launch_description():
                 parameters=[{
                     'use_sim_time': True,
                     'approximate_sync': True,
-                    # --- NEW AGGRESSIVE FILTERING PARAMS ---
                     'uniqueness_ratio': 15.0,  
                     'texture_threshold': 100,  
                     'speckle_size': 1000,      
@@ -331,7 +187,6 @@ def generate_launch_description():
                     ('disparity', 'disparity')
                 ]
             ),
-            # Restored PointCloudNode that was missing in your provided script
             ComposableNode(
                 package='stereo_image_proc',
                 plugin='stereo_image_proc::PointCloudNode',
@@ -351,7 +206,7 @@ def generate_launch_description():
         output='screen'
     )
 
-    # 7. RViz2 Node
+    # 8. RViz2 Node
     node_rviz = Node(
         package='rviz2',
         executable='rviz2',
@@ -360,31 +215,19 @@ def generate_launch_description():
         output='screen'
     )
 
-    # 8. PointCloud to LaserScan Node
-    node_laserscan = Node(
-        package='pointcloud_to_laserscan',
-        executable='pointcloud_to_laserscan_node',
-        name='pointcloud_to_laserscan',
+    # 9. Voxel downsampler node (Your Custom Traversability Analyzer)
+    voxel_downsampler_node = Node(
+        package='rover_description',
+        executable='voxel_downsampler',
+        name='voxel_downsampler',
+        parameters=[{'use_sim_time': True}], 
         remappings=[
-            ('cloud_in', '/stereo/points2'),
-            ('scan', '/scan')
+            ('/stereo_camera/points2', '/stereo/points2')
         ],
-        parameters=[{
-            'target_frame': 'chassis',
-            'transform_tolerance': 0.01,
-            'min_height': 0.15,   
-            'max_height': 0.25,   
-            'range_min': 0.4,     
-            'range_max': 3.5,     
-            'angle_min': -0.7,  
-            'angle_max': 0.7,   
-            'use_inf': True,
-            'use_sim_time': True
-        }],
         output='screen'
     )
 
-    # 9 & 10. Full Nav2 Navigation Stack (Planner, Controller, Recoveries)
+    # 10. Full Nav2 Navigation Stack 
     nav2_bringup_dir = get_package_share_directory('nav2_bringup')
     
     node_nav2_stack = IncludeLaunchDescription(
@@ -405,7 +248,7 @@ def generate_launch_description():
         parameters=[{'use_sim_time': True}]
     )
 
-    # 11. RTAB-Map configured for pure passive stereo (No RGB-D)
+    # 11. RTAB-Map
     node_rtabmap = Node(
         package='rtabmap_slam',
         executable='rtabmap',
@@ -420,12 +263,10 @@ def generate_launch_description():
             'approx_sync': True,
             'wait_for_transform': 0.2,
             
-            # Core tuning parameters for stereo visual odometry
             'Vis/EstimationType': '1', 
             'Vis/MinInliers': '10',     
             'Grid/Sensor': '1',
             'Stereo/MaxDisparity': '256',
-            # --- NEW NOISE FILTERING PARAMS ---
             'Grid/NoiseFilteringRadius': '0.1',      
             'Grid/NoiseFilteringMinNeighbors': '5'   
         }],
@@ -454,14 +295,12 @@ def generate_launch_description():
             'odom_frame': 'odom',
             'base_link_frame': 'chassis',
             'world_frame': 'odom',
-            # Feed in Gazebo's raw wheel odometry
             'odom0': '/odom_raw',
             'odom0_config': [True,  True,  False,   
                              False, False, True,    
                              True,  True,  False,   
                              False, False, True,    
                              False, False, False],
-            # Feed in the IMU data
             'imu0': '/imu/data',
             'imu0_config': [False, False, False, 
                             False, False, True,     
@@ -477,17 +316,13 @@ def generate_launch_description():
     return LaunchDescription([
         node_robot_state_publisher,
         gz_sim,
-        node_spawn_entity,       
-        node_spawn_red_box,      
-        node_spawn_blue_box,
-        node_spawn_cylinder,
-        node_spawn_sphere,
-        node_spawn_wall,     
+        node_spawn_terrain,      
+        node_spawn_entity,          
         node_bridge,
         node_camera_info_fixer,
         stereo_container,
         node_rviz,
-        node_laserscan,
+        voxel_downsampler_node,
         joint_state_pub_node,
         node_rtabmap,
         node_ekf,

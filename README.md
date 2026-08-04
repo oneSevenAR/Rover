@@ -54,6 +54,7 @@ Use the I, J, K, L, and , keys in this second terminal to drive the rover. Since
 ros2 service call /rtabmap/reset std_srvs/srv/Empty
 
 # 6. Reset costmaps
+# global
 ros2 service call /global_costmap/global_costmap/clear_entirely_global_costmap nav2_msgs/srv/ClearEntireCostmap "{}"
-
+# local
 ros2 service call /local_costmap/local_costmap/clear_entirely_local_costmap nav2_msgs/srv/ClearEntireCostmap "{}"
