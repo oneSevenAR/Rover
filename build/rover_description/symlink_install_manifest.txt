@@ -4,6 +4,8 @@
 /workspace/Rover/install/rover_description/share/rover_description/urdf/stereo_camera.xacro
 /workspace/Rover/install/rover_description/share/rover_description/rviz/build/.built_by
 /workspace/Rover/install/rover_description/share/rover_description/rviz/build/COLCON_IGNORE
+/workspace/Rover/install/rover_description/share/rover_description/rviz/dev_terrain_for_rover.mtl
+/workspace/Rover/install/rover_description/share/rover_description/rviz/dev_terrain_for_rover.obj
 /workspace/Rover/install/rover_description/share/rover_description/rviz/install/.colcon_install_layout
 /workspace/Rover/install/rover_description/share/rover_description/rviz/install/COLCON_IGNORE
 /workspace/Rover/install/rover_description/share/rover_description/rviz/install/_local_setup_util_ps1.py

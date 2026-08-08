@@ -1,1 +1,0 @@
-Invoking command in '/workspace/Rover/build/rover_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /workspace/Rover/build/rover_description -- -j12 -l12

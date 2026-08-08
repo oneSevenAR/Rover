@@ -25,10 +25,20 @@
       <wheel_radius>0.08</wheel_radius>
       <odom_publish_frequency>30</odom_publish_frequency>
       <topic>cmd_vel</topic>
-      <odom_topic>odom_raw</odom_topic> <!-- changed from odom and tf-->
+      <odom_topic>odom_raw</odom_topic> 
+      <publish_odom_tf>false</publish_odom_tf> <!-- THE FIX: Mute Gazebo's conflicting TF -->
       <tf_topic>/tf_gazebo</tf_topic>
       <frame_id>odom</frame_id>
       <child_frame_id>chassis</child_frame_id>
+    </plugin>
+  </gazebo>
+
+  <!-- IMU -->
+  <!-- Enable Gazebo IMU System Plugin -->
+  <gazebo>
+    <plugin
+      filename="gz-sim-imu-system"
+      name="gz::sim::systems::Imu">
     </plugin>
   </gazebo>
 
@@ -143,7 +153,7 @@
     <parent link="chassis"/>
     <child link="camera_link"/>
     <!-- The middle value (pitch) ensures the camera always sees the ground -->
-    <origin xyz="0.2 0 0.1" rpy="0 0.35 0"/> 
+    <origin xyz="0.2 0 0.1" rpy="0 0.1 0"/> 
   </joint>
 
   <link name="camera_link">
@@ -174,13 +184,13 @@
       <camera name="left">
         <horizontal_fov>1.3962634</horizontal_fov>
         <image>
-          <width>640</width>
-          <height>480</height>
+          <width>320</width>
+          <height>240</height>
           <format>R8G8B8</format>
         </image>
         <clip>
           <near>0.1</near>
-          <far>10.0</far>
+          <far>20</far>
         </clip>
       </camera>
     </sensor>
@@ -196,13 +206,13 @@
       <camera name="right">
         <horizontal_fov>1.3962634</horizontal_fov>
         <image>
-          <width>640</width>
-          <height>480</height>
+          <width>320</width>
+          <height>240</height>
           <format>R8G8B8</format>
         </image>
         <clip>
           <near>0.1</near>
-          <far>10.0</far>
+          <far>20</far>
         </clip>
       </camera>
     </sensor>

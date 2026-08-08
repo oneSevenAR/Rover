@@ -5,11 +5,20 @@
 /build/
 /install/
 /log/
+/devel/
+
+# Nested workspaces (for example, the RViz workspace)
 **/build/
 **/install/
 **/log/
-/devel/
+
+# ROS bag recordings
 *.bag
+*.bag.active
+*.db3
+*.db3.active
+*.mcap
+*.mcap.active
 
 # Native build artifacts
 /cmake-build-*/
@@ -76,6 +85,7 @@ coverage/
 # Logs and temporary files
 *.log
 /logs/
+/output.txt
 *.tmp
 *.bak
 *.cache
