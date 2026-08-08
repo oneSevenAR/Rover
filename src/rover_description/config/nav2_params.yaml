@@ -108,7 +108,9 @@ bt_navigator_navigate_to_pose_rclcpp_node:
 controller_server:
   ros__parameters:
     use_sim_time: True
-    # Throttled control loop frequency to save Raspberry Pi CPU
+    FollowPath:
+      plugin: "dwb_core::DWBLocalPlanner"
+      allow_unknown: True
     controller_frequency: 5.0 
     min_x_velocity_threshold: 0.001
     min_y_velocity_threshold: 0.5
@@ -121,20 +123,19 @@ controller_server:
     progress_checker:
       plugin: "nav2_controller::SimpleProgressChecker"
       required_movement_radius: 0.5
-      movement_time_allowance: 15.0 # Increased tolerance since the rover moves very slowly
+      movement_time_allowance: 15.0
       
     general_goal_checker:
       stateful: True
       plugin: "nav2_controller::SimpleGoalChecker"
-      xy_goal_tolerance: 0.25
-      yaw_goal_tolerance: 0.25
+      xy_goal_tolerance: 0.4   # Increased from 0.25
+      yaw_goal_tolerance: 0.5  # Increased from 0.25
       
     FollowPath:
       plugin: "dwb_core::DWBLocalPlanner"
       debug_trajectory_details: True
       min_vel_x: 0.0
       min_vel_y: 0.0
-      # Severely clamped velocities to maintain maximum frame overlap for RTAB-Map
       max_vel_x: 0.10 
       max_vel_y: 0.0
       max_vel_theta: 0.25 
@@ -160,9 +161,9 @@ controller_server:
       stateful: True
       critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
       BaseObstacle.scale: 0.02
-      PathAlign.scale: 32.0
+      PathAlign.scale: 16.0
       PathAlign.forward_point_distance: 0.1
-      GoalAlign.scale: 24.0
+      GoalAlign.scale: 12.0
       GoalAlign.forward_point_distance: 0.1
       PathDist.scale: 32.0
       GoalDist.scale: 24.0
@@ -173,87 +174,62 @@ controller_server:
 local_costmap:
   local_costmap:
     ros__parameters:
-      # Slowed down update rates drastically to accommodate the Pi
-      update_frequency: 2.0 
-      publish_frequency: 1.0
+      track_unknown_space: False
+      update_frequency: 10.0 
+      publish_frequency: 10.0 #gemini suggested 5 but im doing 10
       global_frame: odom
       robot_base_frame: chassis
       use_sim_time: True
       rolling_window: true
       width: 3
       height: 3
-      resolution: 0.1 # Matched to your 10cm PCL voxel downsampler
-      footprint: "[[-0.3, -0.3], [0.3, -0.3], [0.3, 0.3], [-0.3, 0.3]]"
-      plugins: ["voxel_layer", "inflation_layer"]
+      resolution: 0.1
+      footprint: "[[-0.2, -0.15], [0.2, -0.15], [0.2, 0.15], [-0.2, 0.15]]"
       
+      plugins: ["stvl_layer", "inflation_layer"]
+      
+      stvl_layer:
+        plugin: "spatio_temporal_voxel_layer/SpatioTemporalVoxelLayer"
+        enabled: true
+        voxel_decay: 2.0
+        decay_model: 0
+        voxel_size: 0.05
+        track_unknown_space: true
+        observation_sources: stereo_cam
+        stereo_cam:
+          topic: /stereo/points2
+          data_type: PointCloud2
+          min_obstacle_height: 0.18
+          max_obstacle_height: 1.0
+          obstacle_min_range: 0.2
+          obstacle_max_range: 4.0
+          raytrace_min_range: 0.2
+          raytrace_max_range: 4.5
+          clearing: true
+          marking: true
+          inf_is_valid: false
+
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 3.0
-        inflation_radius: 0.35
-        
-      # Fully converted to 3D Voxel Layer processing
-      voxel_layer:
-        plugin: "nav2_costmap_2d::VoxelLayer"
-        enabled: True
-        publish_voxel_map: True
-        origin_z: 0.0
-        z_resolution: 0.1 
-        z_voxels: 12
-        # Ignores data strictly below ground or above the chassis
-        max_obstacle_height: 1.2
-        min_obstacle_height: 0.0
-        mark_threshold: 0
-        observation_sources: stereo_cloud
-        stereo_cloud:
-          topic: /stereo_camera/points_downsampled
-          max_obstacle_height: 1.2
-          min_obstacle_height: 0.0
-          obstacle_max_range: 3.0
-          obstacle_min_range: 0.1
-          raytrace_max_range: 3.5
-          raytrace_min_range: 0.0
-          clearing: True
-          marking: True
-          data_type: "PointCloud2"
+        cost_scaling_factor: 1.5  # Reduced from 3.0 (makes the slope of the cost gentler)
+        inflation_radius: 0.25    # Reduced from 0.35 (shrinks the lethal boundary)
           
       always_send_full_costmap: True
 
 global_costmap:
   global_costmap:
     ros__parameters:
+      track_unknown_space: False
       update_frequency: 1.0
       publish_frequency: 0.5
       global_frame: map
       robot_base_frame: chassis
       use_sim_time: True
-      robot_radius: 0.22
-      resolution: 0.1 # Matched to 10cm PCL downsampler
-      track_unknown_space: true
-      # Replaced 2D obstacle_layer with voxel_layer
-      plugins: ["static_layer", "voxel_layer", "inflation_layer"]
+      robot_radius: 0.25
+      resolution: 0.1
       
-      voxel_layer:
-        plugin: "nav2_costmap_2d::VoxelLayer"
-        enabled: True
-        origin_z: 0.0
-        z_resolution: 0.1
-        z_voxels: 12
-        max_obstacle_height: 1.2
-        min_obstacle_height: 0.0 # CHANGED: Was -0.1 (Ignores ground)
-        mark_threshold: 0
-        observation_sources: stereo_cloud
-        stereo_cloud:
-          topic: /stereo_camera/points_downsampled
-          max_obstacle_height: 1.2
-          min_obstacle_height: 0.0 # CHANGED: Was -0.1 (Ignores ground)
-          obstacle_max_range: 4.0
-          obstacle_min_range: 0.1
-          raytrace_max_range: 4.5
-          raytrace_min_range: 0.0
-          clearing: True
-          marking: True
-          data_type: "PointCloud2"
-          
+      plugins: ["static_layer", "inflation_layer"]
+      
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
         map_subscribe_transient_local: True
@@ -280,7 +256,6 @@ map_saver:
 
 planner_server:
   ros__parameters:
-    # Lowered frequency to save compute
     expected_planner_frequency: 5.0 
     use_sim_time: True
     planner_plugins: ["GridBased"]
@@ -304,7 +279,7 @@ behavior_server:
   ros__parameters:
     costmap_topic: local_costmap/costmap_raw
     footprint_topic: local_costmap/published_footprint
-    cycle_frequency: 5.0 # Dropped for Pi constraints
+    cycle_frequency: 5.0
     behavior_plugins: ["spin", "backup", "drive_on_heading", "assisted_teleop", "wait"]
     spin:
       plugin: "nav2_behaviors/Spin"
@@ -321,7 +296,7 @@ behavior_server:
     transform_tolerance: 0.1
     use_sim_time: true
     simulate_ahead_time: 2.0
-    max_rotational_vel: 0.25 # Clamped
+    max_rotational_vel: 0.25
     min_rotational_vel: 0.1
     rotational_acc_lim: 0.25
 
@@ -332,7 +307,7 @@ robot_state_publisher:
 waypoint_follower:
   ros__parameters:
     use_sim_time: True
-    loop_rate: 5 # Slowed down
+    loop_rate: 5
     stop_on_failure: false
     waypoint_task_executor_plugin: "wait_at_waypoint"
     wait_at_waypoint:
@@ -346,7 +321,6 @@ velocity_smoother:
     smoothing_frequency: 10.0
     scale_velocities: False
     feedback: "OPEN_LOOP"
-    # Matches the controller limits to prevent aggressive scaling conflicts
     max_velocity: [0.10, 0.0, 0.25]
     min_velocity: [-0.10, 0.0, -0.25]
     max_accel: [0.15, 0.0, 0.25]

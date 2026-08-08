@@ -1,2 +1,0 @@
-Invoking command in '/workspace/Rover/build/PhotometricDatasetCalibration': /usr/bin/cmake /workspace/Rover/VSLAM/VSLAM-LAB/Datasets/extra-files -DCMAKE_INSTALL_PREFIX=/workspace/Rover/install/PhotometricDatasetCalibration
-Invoked command in '/workspace/Rover/build/PhotometricDatasetCalibration' returned '1': /usr/bin/cmake /workspace/Rover/VSLAM/VSLAM-LAB/Datasets/extra-files -DCMAKE_INSTALL_PREFIX=/workspace/Rover/install/PhotometricDatasetCalibration
