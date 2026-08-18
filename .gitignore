@@ -95,3 +95,5 @@ coverage/
 .DS_Store
 Thumbs.db
 .directory
+build/rover_description/symlink_install_manifest.txt
+install/rover_description/share/rover_description/launch/__pycache__/stereo_sim.launch.cpython-310.pyc

@@ -6,7 +6,7 @@ amcl:
     alpha3: 0.2
     alpha4: 0.2
     alpha5: 0.2
-    base_frame_id: "base_footprint"
+    base_frame_id: "chassis"
     beam_skip_distance: 0.5
     beam_skip_error_threshold: 0.9
     beam_skip_threshold: 0.3
@@ -29,8 +29,8 @@ amcl:
     robot_model_type: "nav2_amcl::DifferentialMotionModel"
     save_pose_rate: 0.5
     sigma_hit: 0.2
-    tf_broadcast: true
-    transform_tolerance: 1.0
+    tf_broadcast: false
+    transform_tolerance: 1.5
     update_min_a: 0.2
     update_min_d: 0.25
     z_hit: 0.5
@@ -108,9 +108,7 @@ bt_navigator_navigate_to_pose_rclcpp_node:
 controller_server:
   ros__parameters:
     use_sim_time: True
-    FollowPath:
-      plugin: "dwb_core::DWBLocalPlanner"
-      allow_unknown: True
+    transform_tolerance: 1.5
     controller_frequency: 5.0 
     min_x_velocity_threshold: 0.001
     min_y_velocity_threshold: 0.5
@@ -128,11 +126,12 @@ controller_server:
     general_goal_checker:
       stateful: True
       plugin: "nav2_controller::SimpleGoalChecker"
-      xy_goal_tolerance: 0.4   # Increased from 0.25
-      yaw_goal_tolerance: 0.5  # Increased from 0.25
+      xy_goal_tolerance: 0.4
+      yaw_goal_tolerance: 0.5
       
     FollowPath:
       plugin: "dwb_core::DWBLocalPlanner"
+      allow_unknown: True
       debug_trajectory_details: True
       min_vel_x: 0.0
       min_vel_y: 0.0
@@ -154,7 +153,7 @@ controller_server:
       sim_time: 1.7
       linear_granularity: 0.05
       angular_granularity: 0.025
-      transform_tolerance: 0.2
+      transform_tolerance: 1.5
       xy_goal_tolerance: 0.25
       trans_stopped_velocity: 0.05
       short_circuit_trajectory_evaluation: True
@@ -176,15 +175,16 @@ local_costmap:
     ros__parameters:
       track_unknown_space: False
       update_frequency: 10.0 
-      publish_frequency: 10.0 #gemini suggested 5 but im doing 10
+      publish_frequency: 10.0
       global_frame: odom
       robot_base_frame: chassis
+      transform_tolerance: 1.5
       use_sim_time: True
       rolling_window: true
       width: 3
       height: 3
       resolution: 0.1
-      footprint: "[[-0.2, -0.15], [0.2, -0.15], [0.2, 0.15], [-0.2, 0.15]]"
+      footprint: "[[-0.2, -0.19], [0.2, -0.19], [0.2, 0.19], [-0.2, 0.19]]"
       
       plugins: ["stvl_layer", "inflation_layer"]
       
@@ -195,24 +195,36 @@ local_costmap:
         decay_model: 0
         voxel_size: 0.05
         track_unknown_space: true
-        observation_sources: stereo_cam
-        stereo_cam:
-          topic: /stereo/points2
+        # ADDED: STVL now listens to TWO separate channels
+        observation_sources: stereo_obstacles stereo_ground 
+        
+        stereo_obstacles:
+          topic: /terrain/obstacles
           data_type: PointCloud2
-          min_obstacle_height: 0.18
-          max_obstacle_height: 1.0
-          obstacle_min_range: 0.2
-          obstacle_max_range: 4.0
-          raytrace_min_range: 0.2
-          raytrace_max_range: 4.5
-          clearing: true
           marking: true
+          clearing: true
+          min_obstacle_height: -2.0 
+          max_obstacle_height: 2.0
+          obstacle_max_range: 2.5
+          raytrace_max_range: 3.0
+          mark_threshold: 3          # CRITICAL: Requires 3 stacked red points in a 5cm cube to trigger a lethal wall. Kills ghosts.
+          inf_is_valid: false
+
+        stereo_ground:
+          topic: /terrain/ground
+          data_type: PointCloud2
+          marking: false    # CRITICAL: Prevents the laser beam from becoming a wall
+          clearing: true    # CRITICAL: Uses the green ground to actively erase fake obstacles
+          min_obstacle_height: -50.0
+          max_obstacle_height: 2.0
+          obstacle_max_range: 2.5
+          raytrace_max_range: 3.0
           inf_is_valid: false
 
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 1.5  # Reduced from 3.0 (makes the slope of the cost gentler)
-        inflation_radius: 0.25    # Reduced from 0.35 (shrinks the lethal boundary)
+        cost_scaling_factor: 1.5
+        inflation_radius: 0.20    # Shrinks the lethal forcefield so the rover can squeeze over peaks confidently
           
       always_send_full_costmap: True
 
@@ -225,7 +237,7 @@ global_costmap:
       global_frame: map
       robot_base_frame: chassis
       use_sim_time: True
-      robot_radius: 0.25
+      footprint: "[[-0.2, -0.19], [0.2, -0.19], [0.2, 0.19], [-0.2, 0.19]]"
       resolution: 0.1
       
       plugins: ["static_layer", "inflation_layer"]
@@ -258,6 +270,7 @@ planner_server:
   ros__parameters:
     expected_planner_frequency: 5.0 
     use_sim_time: True
+    transform_tolerance: 1.5  # ADD THIS LINE
     planner_plugins: ["GridBased"]
     GridBased:
       plugin: "nav2_navfn_planner/NavfnPlanner"
@@ -293,7 +306,7 @@ behavior_server:
       plugin: "nav2_behaviors/AssistedTeleop"
     global_frame: odom
     robot_base_frame: chassis
-    transform_tolerance: 0.1
+    transform_tolerance: 1.5
     use_sim_time: true
     simulate_ahead_time: 2.0
     max_rotational_vel: 0.25

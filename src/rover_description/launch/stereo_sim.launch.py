@@ -1,11 +1,10 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import ExecuteProcess
+from launch.actions import ExecuteProcess, IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node, ComposableNodeContainer
 from launch_ros.descriptions import ComposableNode
-from launch.actions import IncludeLaunchDescription
-from launch.launch_description_sources import PythonLaunchDescriptionSource
 import xacro
 
 def generate_launch_description():
@@ -29,28 +28,17 @@ def generate_launch_description():
         parameters=[robot_description, {'use_sim_time': True}]
     )
 
-    # 2. Gazebo Sim (Using the guaranteed working default world)
+    # 2. Gazebo Sim
     gz_sim = ExecuteProcess(
         cmd=['ign', 'gazebo', '-r', 'empty.sdf'],
         output='screen'
     )
 
-    # Force the absolute path so Gazebo doesn't lose the files
+    # Force absolute paths for terrain assets
     workspace_dir = os.path.abspath(os.getcwd())
-    
-    # Custom terrain absolute paths
-    # Define all three paths explicitly
-    terrain_visual_path = os.path.join(workspace_dir, "src", "rover_description", "rviz", "dev_terrain_for_rover.obj")
-    # terrain_collision_path = os.path.join(workspace_dir, "src", "rover_description", "rviz", "terrain_for_rover_triangles.stl")
-    terrain_collision_path = os.path.join(workspace_dir, "src", "rover_description", "rviz", "dev_terrain_for_rover.stl")
-    # Gazebo's explicit PBR material overrides the OBJ MTL, so use the 4K albedo map.
-    terrain_texture_path = os.path.join(
-        workspace_dir,
-        "src",
-        "rover_description",
-        "rviz",
-        "rocky_trail_02_diff_4k.jpg",
-    )
+    terrain_visual_path = os.path.join(workspace_dir, "src", "rover_description", "rviz", "dev_2_terrain_for_rover_edited.obj")
+    terrain_collision_path = os.path.join(workspace_dir, "src", "rover_description", "rviz", "dev_2_terrain_for_rover_edited.stl")
+    terrain_texture_path = os.path.join(workspace_dir, "src", "rover_description", "rviz", "rocky_trail_02_diff_4k.jpg")
     
     terrain_xml = f"""<?xml version="1.0"?>
     <sdf version="1.8">
@@ -61,21 +49,17 @@ def generate_launch_description():
             <geometry>
                 <mesh><uri>file://{terrain_visual_path}</uri></mesh>
             </geometry>
-            <!-- FORCE THE TEXTURE DIRECTLY IN THE SDF -->
             <material>
-            <ambient>1 1 1 1</ambient>
-            <diffuse>1 1 1 1</diffuse>
-            <specular>0.03 0.03 0.03 1</specular>
-            <emissive>0.08 0.08 0.08 1</emissive>
-
-            <pbr>
-                <metal>
-                    <albedo_map>file://{terrain_texture_path}</albedo_map>
-                    <roughness>1.0</roughness>
-                    <metalness>0.0</metalness>
-                </metal>
-            </pbr>
-        </material>
+                <ambient>0.35 0.35 0.35 1</ambient>
+                <diffuse>1 1 1 1</diffuse>
+                <pbr>
+                    <metal>
+                        <albedo_map>file://{terrain_texture_path}</albedo_map>
+                        <roughness>0.8</roughness>
+                        <metalness>0.0</metalness>
+                    </metal>
+                </pbr>
+            </material>
         </visual>
         <collision name="collision">
             <geometry>
@@ -83,6 +67,12 @@ def generate_launch_description():
             </geometry>
         </collision>
         </link>
+        <light name="terrain_sun" type="directional">
+            <cast_shadows>true</cast_shadows>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+            <direction>-0.5 0.3 -0.8</direction>
+        </light>
     </model>
     </sdf>"""
 
@@ -102,7 +92,6 @@ def generate_launch_description():
     )
 
     # 4. Spawn Camera Rig (Rover)
-    # Z-height increased to 10.0 to ensure a safe drop onto the highest displaced terrain peaks
     node_spawn_entity = Node(
         package='ros_gz_sim',
         executable='create',
@@ -115,7 +104,7 @@ def generate_launch_description():
         output='screen'
     )
 
-    # 5. Master Unified Bridge (Clean and Stable)
+    # 5. Master Unified Bridge
     node_bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
@@ -150,7 +139,7 @@ def generate_launch_description():
         output='screen'
     )
 
-    # 7. Stereo Processing Container
+    # 7. Stereo Processing & Terrain Filtration Container
     stereo_container = ComposableNodeContainer(
         name='stereo_container',
         namespace='stereo',
@@ -187,9 +176,9 @@ def generate_launch_description():
                 parameters=[{
                     'use_sim_time': True,
                     'approximate_sync': True,
-                    'uniqueness_ratio': 5.0,    # LOWERED: Allows less "perfect" pixel matches
-                    'texture_threshold': 10,    # LOWERED: Accepts lower-contrast dirt textures
-                    'min_disparity': 0,         # ADDED: Forces depth calculation directly in front of the rover
+                    'uniqueness_ratio': 5.0,
+                    'texture_threshold': 10,
+                    'min_disparity': 2,
                     'speckle_size': 1000,      
                     'speckle_range': 31        
                 }],
@@ -214,6 +203,27 @@ def generate_launch_description():
                 }],
                 remappings=[
                     ('left/image_rect_color', 'left/image_rect')
+                ]
+            ),
+            ComposableNode(
+                package='rtabmap_util',
+                plugin='rtabmap_util::ObstaclesDetection',
+                name='obstacles_detection',
+                namespace='stereo',
+                parameters=[{
+                    'use_sim_time': True,
+                    'frame_id': 'chassis',
+                    'map_frame_id': 'chassis',        # Tilts the 15cm cutoff to match the rover's angle
+                    'ground_normal_angle': 3.14,      # CRITICAL: Bypasses RANSAC normal calculations completely
+                    'max_ground_height': 0.15,        # Dirt < 15cm is painted green
+                    'max_obstacles_height': 1.0,      # Objects > 15cm are painted red
+                    'min_cluster_size': 20,           # Ignore single floating noise pixels
+                    'wait_for_transform': 0.2
+                }],
+                remappings=[
+                    ('cloud', '/stereo/points2'),
+                    ('obstacles', '/terrain/obstacles'),
+                    ('ground', '/terrain/ground')
                 ]
             ),
         ],
@@ -270,19 +280,23 @@ def generate_launch_description():
             'wait_for_transform': 0.2,
             
             'Vis/EstimationType': '1', 
-            'Vis/MinInliers': '10',     
+            'Vis/MinInliers': '5',               # FIXED: Lowered from 10 to tolerate bad dirt matches
             'Grid/Sensor': '1',
-            'Stereo/MaxDisparity': '256',
+            'Stereo/MaxDisparity': '512',        # FIXED: Doubled from 256 to allow calculation of very close pixels
             'Grid/NoiseFilteringRadius': '0.1',      
             'Grid/NoiseFilteringMinNeighbors': '5',
             
-            # --- NEW PARAMETERS TO ADD ---
-            'Kp/MaxFeatures': '1000',        # Ask it to extract more features to compensate for high rejections
-            'Vis/CorGuessWinSize': '40',     # Widen the optical flow search window for close-up ground textures
-            'Stereo/OpticalFlow': 'false',    # Fallback to block matching if optical flow continues to struggle
-
-            #Newly added
-            'Optimizer/Strategy': '1'  # 0=TORO, 1=g2o, 2=GTSAM. Forces RTAB-Map to use the robust g2o backend.
+            'Kp/MaxFeatures': '1500',            # FIXED: Increased to grab more visual anchors
+            'Vis/MaxFeatures': '1500',           # FIXED: Matched to Kp to ensure tracking pipeline doesn't choke
+            'Vis/CorGuessWinSize': '40',     
+            'Stereo/OpticalFlow': 'false',    
+            'Optimizer/Strategy': '1',
+            
+            'Odom/Strategy': '1',                # ADDED: Better frame-to-frame odometry for continuous off-roading
+            'Odom/GuessMotion': 'true',          # ADDED: Forces the system to guess its location if the camera goes blind for a frame
+            
+            'Reg/Force3DoF': 'true',
+            'Odom/Holonomic': 'false'
         }],
         remappings=[
             ('left/image_rect', '/stereo/left/image_rect'),
@@ -309,20 +323,20 @@ def generate_launch_description():
             'base_link_frame': 'chassis',
             'world_frame': 'odom',
             
-            # Wheel Odometry (Diff drive only provides 2D data: X, Y, Yaw)
             'odom0': '/odom_raw',
             'odom0_config': [True,  True,  False,   
                              False, False, True,    
                              True,  True,  False,   
                              False, False, True,    
                              False, False, False],
+
+            'imu0_relative': False,
                              
-            # IMU (Unlocking ONLY Roll, Pitch, and their angular velocities)
             'imu0': '/imu/data',
             'imu0_config': [False, False, False, 
-                            True,  True,  False,  # CHANGED: Dropped Yaw to stop the rotation fight
+                            True,  True,  False,  
                             False, False, False, 
-                            True,  True,  False,  # CHANGED: Dropped Yaw Velocity
+                            True,  True,  False,  
                             False, False, False]
         }],
         remappings=[
