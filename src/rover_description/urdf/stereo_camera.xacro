@@ -24,8 +24,8 @@
       <wheel_separation>0.34</wheel_separation>
       <wheel_radius>0.08</wheel_radius>
       <odom_publish_frequency>30</odom_publish_frequency>
-      <topic>cmd_vel</topic>
-      <odom_topic>odom_raw</odom_topic> 
+      <topic>/cmd_vel</topic>
+      <odom_topic>/odom_raw</odom_topic> 
       <publish_odom_tf>false</publish_odom_tf> <!-- Mute Gazebo's conflicting TF -->
       <tf_topic>/tf_gazebo</tf_topic>
       <frame_id>odom</frame_id>
@@ -147,7 +147,7 @@
   <parent link="chassis"/>
   <child link="camera_link"/>
   <!-- Pitch down by 0.35 radians (~20 degrees) -->
-  <origin xyz="0.2 0 0.06" rpy="0 0.1 0"/> 
+  <origin xyz="0.2 0 0.15" rpy="0 0.35 0"/> 
 </joint>
 
   <link name="camera_link">
@@ -189,7 +189,7 @@
       <topic>/stereo/left/image_raw</topic>
       <gz_frame_id>left_camera_optical_frame</gz_frame_id>
       <camera name="left">
-        <horizontal_fov>1.3962634</horizontal_fov>
+        <horizontal_fov>1.74</horizontal_fov>
         <image>
           <width>640</width>
           <height>480</height>
@@ -197,7 +197,7 @@
         </image>
         <clip>
           <near>0.1</near>
-          <far>1</far>
+          <far>10.0</far>
         </clip>
       </camera>
     </sensor>
@@ -211,7 +211,7 @@
       <pose>0 -0.1 0 0 0 0</pose>
       <gz_frame_id>right_camera_optical_frame</gz_frame_id>
       <camera name="right">
-        <horizontal_fov>1.3962634</horizontal_fov>
+        <horizontal_fov>1.74</horizontal_fov>
         <image>
           <width>640</width>
           <height>480</height>
@@ -219,7 +219,7 @@
         </image>
         <clip>
           <near>0.1</near>
-          <far>1</far>
+          <far>10.0</far>
         </clip>
       </camera>
     </sensor>

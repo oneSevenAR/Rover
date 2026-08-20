@@ -1,7 +1,10 @@
 /workspace/Rover/install/rover_description/lib/rover_description/camera_info_fixer.py
-/workspace/Rover/install/rover_description/lib/rover_description/voxel_downsampler
 /workspace/Rover/install/rover_description/share/rover_description/launch/stereo_sim.launch.py
 /workspace/Rover/install/rover_description/share/rover_description/urdf/stereo_camera.xacro
+/workspace/Rover/install/rover_description/share/rover_description/rviz/CHECKERBOARD.mtl
+/workspace/Rover/install/rover_description/share/rover_description/rviz/CHECKERBOARD.obj
+/workspace/Rover/install/rover_description/share/rover_description/rviz/CHECKERBOARD.png
+/workspace/Rover/install/rover_description/share/rover_description/rviz/CHECKERBOARD.stl
 /workspace/Rover/install/rover_description/share/rover_description/rviz/dev_2_terrain_for_rover.mtl
 /workspace/Rover/install/rover_description/share/rover_description/rviz/dev_2_terrain_for_rover.obj
 /workspace/Rover/install/rover_description/share/rover_description/rviz/dev_2_terrain_for_rover.stl
@@ -11,7 +14,7 @@
 /workspace/Rover/install/rover_description/share/rover_description/rviz/dev_terrain_for_rover.mtl
 /workspace/Rover/install/rover_description/share/rover_description/rviz/dev_terrain_for_rover.obj
 /workspace/Rover/install/rover_description/share/rover_description/rviz/dev_terrain_for_rover.stl
-/workspace/Rover/install/rover_description/share/rover_description/rviz/rocky_trail_02_diff_4k.jpg
+/workspace/Rover/install/rover_description/share/rover_description/rviz/rocky_trail_02_diff_4k_1.jpg
 /workspace/Rover/install/rover_description/share/rover_description/rviz/stereo_view.rviz
 /workspace/Rover/install/rover_description/share/rover_description/rviz/terrain_for_rover.mtl
 /workspace/Rover/install/rover_description/share/rover_description/rviz/terrain_for_rover.obj

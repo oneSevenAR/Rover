@@ -197,43 +197,6 @@ rover_description_uninstall/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/rover_description_uninstall.dir/build.make CMakeFiles/rover_description_uninstall.dir/build
 .PHONY : rover_description_uninstall/fast
 
-#=============================================================================
-# Target rules for targets named voxel_downsampler
-
-# Build rule for target.
-voxel_downsampler: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 voxel_downsampler
-.PHONY : voxel_downsampler
-
-# fast build rule for target.
-voxel_downsampler/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/voxel_downsampler.dir/build.make CMakeFiles/voxel_downsampler.dir/build
-.PHONY : voxel_downsampler/fast
-
-src/voxel_downsampler.o: src/voxel_downsampler.cpp.o
-.PHONY : src/voxel_downsampler.o
-
-# target to build an object file
-src/voxel_downsampler.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/voxel_downsampler.dir/build.make CMakeFiles/voxel_downsampler.dir/src/voxel_downsampler.cpp.o
-.PHONY : src/voxel_downsampler.cpp.o
-
-src/voxel_downsampler.i: src/voxel_downsampler.cpp.i
-.PHONY : src/voxel_downsampler.i
-
-# target to preprocess a source file
-src/voxel_downsampler.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/voxel_downsampler.dir/build.make CMakeFiles/voxel_downsampler.dir/src/voxel_downsampler.cpp.i
-.PHONY : src/voxel_downsampler.cpp.i
-
-src/voxel_downsampler.s: src/voxel_downsampler.cpp.s
-.PHONY : src/voxel_downsampler.s
-
-# target to generate assembly for a file
-src/voxel_downsampler.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/voxel_downsampler.dir/build.make CMakeFiles/voxel_downsampler.dir/src/voxel_downsampler.cpp.s
-.PHONY : src/voxel_downsampler.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -249,10 +212,6 @@ help:
 	@echo "... test"
 	@echo "... rover_description_uninstall"
 	@echo "... uninstall"
-	@echo "... voxel_downsampler"
-	@echo "... src/voxel_downsampler.o"
-	@echo "... src/voxel_downsampler.i"
-	@echo "... src/voxel_downsampler.s"
 .PHONY : help
 
 

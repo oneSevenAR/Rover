@@ -36,9 +36,9 @@ def generate_launch_description():
 
     # Force absolute paths for terrain assets
     workspace_dir = os.path.abspath(os.getcwd())
-    terrain_visual_path = os.path.join(workspace_dir, "src", "rover_description", "rviz", "dev_2_terrain_for_rover_edited.obj")
-    terrain_collision_path = os.path.join(workspace_dir, "src", "rover_description", "rviz", "dev_2_terrain_for_rover_edited.stl")
-    terrain_texture_path = os.path.join(workspace_dir, "src", "rover_description", "rviz", "rocky_trail_02_diff_4k.jpg")
+    terrain_visual_path = os.path.join(workspace_dir, "src", "rover_description", "rviz", "CHECKERBOARD.obj")
+    terrain_collision_path = os.path.join(workspace_dir, "src", "rover_description", "rviz", "CHECKERBOARD.stl")
+    terrain_texture_path = os.path.join(workspace_dir, "src", "rover_description", "rviz", "CHECKERBOARD.png")
     
     terrain_xml = f"""<?xml version="1.0"?>
     <sdf version="1.8">
@@ -111,8 +111,6 @@ def generate_launch_description():
         name='gazebo_bridge',
         arguments=[
             '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
-            '/stereo/left/image_raw@sensor_msgs/msg/Image[gz.msgs.Image',
-            '/stereo/right/image_raw@sensor_msgs/msg/Image[gz.msgs.Image',
             '/stereo/left/camera_info@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo',
             '/stereo/right/camera_info@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo',
             '/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
@@ -131,11 +129,19 @@ def generate_launch_description():
         output='screen'
     )
 
+    node_image_bridge = Node(
+        package='ros_gz_image',
+        executable='image_bridge',
+        name='gazebo_image_bridge',
+        arguments=['/stereo/left/image_raw', '/stereo/right/image_raw'],
+        output='screen'
+    )
+
     # 6. Camera Info Fixer
     node_camera_info_fixer = Node(
         package='rover_description',
         executable='camera_info_fixer.py',
-        parameters=[{'use_sim_time': True}],
+        parameters=[robot_description, {'use_sim_time': True}],
         output='screen'
     )
 
@@ -151,7 +157,7 @@ def generate_launch_description():
                 plugin='image_proc::RectifyNode',
                 name='left_rectify_node',
                 namespace='stereo/left',
-                parameters=[{'use_sim_time': True}],
+                parameters=[robot_description, {'use_sim_time': True}],
                 remappings=[
                     ('image', 'image_raw'),
                     ('image_rect', 'image_rect')
@@ -162,7 +168,7 @@ def generate_launch_description():
                 plugin='image_proc::RectifyNode',
                 name='right_rectify_node',
                 namespace='stereo/right',
-                parameters=[{'use_sim_time': True}],
+                parameters=[robot_description, {'use_sim_time': True}],
                 remappings=[
                     ('image', 'image_raw'),
                     ('image_rect', 'image_rect')
@@ -179,7 +185,7 @@ def generate_launch_description():
                     'uniqueness_ratio': 5.0,
                     'texture_threshold': 10,
                     'min_disparity': 2,
-                    'speckle_size': 1000,      
+                    'speckle_size': 100,      
                     'speckle_range': 31        
                 }],
                 remappings=[
@@ -214,10 +220,10 @@ def generate_launch_description():
                     'use_sim_time': True,
                     'frame_id': 'chassis',
                     'map_frame_id': 'chassis',        # Tilts the 15cm cutoff to match the rover's angle
-                    'ground_normal_angle': 3.14,      # CRITICAL: Bypasses RANSAC normal calculations completely
-                    'max_ground_height': 0.15,        # Dirt < 15cm is painted green
+                    'ground_normal_angle': 0.785,     # Re-enabled RANSAC normal calculations for ground segmentation
+                    'max_ground_height': 0.05,        # Dirt < 15cm is painted green
                     'max_obstacles_height': 1.0,      # Objects > 15cm are painted red
-                    'min_cluster_size': 20,           # Ignore single floating noise pixels
+                    'min_cluster_size': 100,          # Increased: Ignore floating noise clusters
                     'wait_for_transform': 0.2
                 }],
                 remappings=[
@@ -230,12 +236,15 @@ def generate_launch_description():
         output='screen'
     )
 
+    rviz_config_path = os.path.join(pkg_share, 'rviz', 'stereo_view.rviz')
+
     # 8. RViz2 Node
     node_rviz = Node(
         package='rviz2',
         executable='rviz2',
         name='rviz2',
-        parameters=[{'use_sim_time': True}],
+        arguments=['-d', rviz_config_path],
+        parameters=[robot_description, {'use_sim_time': True}],
         output='screen'
     )
 
@@ -257,7 +266,34 @@ def generate_launch_description():
         package='joint_state_publisher',
         executable='joint_state_publisher',
         name='joint_state_publisher',
-        parameters=[{'use_sim_time': True}]
+        parameters=[robot_description, {'use_sim_time': True}]
+    )
+
+    node_stereo_odometry = Node(
+        package='rtabmap_odom',
+        executable='stereo_odometry',
+        name='stereo_odometry',
+        parameters=[{
+            'use_sim_time': True,
+            'frame_id': 'chassis',
+            'odom_frame_id': 'odom',
+            'publish_tf': False,
+            'wait_for_transform': 0.2,
+            'approx_sync': True,
+            'Odom/Strategy': '1',
+            'Odom/GuessMotion': 'true',
+            'Vis/MinInliers': '5',
+            'Kp/MaxFeatures': '1500',
+            'Vis/MaxFeatures': '1500'
+        }],
+        remappings=[
+            ('left/image_rect', '/stereo/left/image_rect'),
+            ('left/camera_info', '/stereo/left/camera_info'),
+            ('right/image_rect', '/stereo/right/image_rect'),
+            ('right/camera_info', '/stereo/right/camera_info'),
+            ('odom', '/odom_visual')
+        ],
+        output='screen'
     )
 
     # 10. RTAB-Map
@@ -267,7 +303,7 @@ def generate_launch_description():
         name='rtabmap',
         arguments=['-d'],
         parameters=[{
-            'Grid/MaxGroundHeight': '0.15',      
+            'Grid/MaxGroundHeight': '0.05',      
             'Grid/MaxObstacleHeight': '1.0',     
             'Grid/NormalsSegmentation': 'false',
             'Grid/RangeMax': '3.5', 
@@ -295,7 +331,7 @@ def generate_launch_description():
             'Odom/Strategy': '1',                # ADDED: Better frame-to-frame odometry for continuous off-roading
             'Odom/GuessMotion': 'true',          # ADDED: Forces the system to guess its location if the camera goes blind for a frame
             
-            'Reg/Force3DoF': 'true',
+            'Reg/Force3DoF': 'false',
             'Odom/Holonomic': 'false'
         }],
         remappings=[
@@ -330,13 +366,20 @@ def generate_launch_description():
                              False, False, True,    
                              False, False, False],
 
+            'odom1': '/odom_visual',
+            'odom1_config': [False, False, False, 
+                             False, False, False, 
+                             True,  True,  False, 
+                             False, False, True, 
+                             False, False, False],
+
             'imu0_relative': False,
                              
             'imu0': '/imu/data',
             'imu0_config': [False, False, False, 
                             True,  True,  False,  
                             False, False, False, 
-                            True,  True,  False,  
+                            True,  True,  True,  
                             False, False, False]
         }],
         remappings=[
@@ -350,10 +393,12 @@ def generate_launch_description():
         node_spawn_terrain,      
         node_spawn_entity,          
         node_bridge,
+        node_image_bridge,
         node_camera_info_fixer,
         stereo_container,
         node_rviz,
         joint_state_pub_node,
+        node_stereo_odometry,
         node_rtabmap,
         node_ekf,
         node_nav2_stack
